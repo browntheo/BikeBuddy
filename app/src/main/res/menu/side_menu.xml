@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:map="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/distance"
+        android:title="Distance: "
+        map:actionViewClass="android.widget.TextView" />
+
+    <item
+        android:id="@+id/duration"
+        android:title="Duration: " />
+
+    <item
+        android:id="@+id/marker_list"
+        android:title="Markers">
+        <menu>
+
+        </menu>
+    </item>
+</menu>

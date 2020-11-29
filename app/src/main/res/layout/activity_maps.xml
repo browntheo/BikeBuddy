@@ -1,9 +1,417 @@
 <?xml version="1.0" encoding="utf-8"?>
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:map="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/map"
-    android:name="com.google.android.gms.maps.SupportMapFragment"
+    android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MapsActivity" />
+    android:layout_height="match_parent">
+
+    <!-- Side Menu Thingy -->
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@drawable/light_background"
+        android:fitsSystemWindows="true"
+        android:theme="@style/DarkModeStyle"
+        map:headerLayout="@layout/side_menu_header"
+        map:menu="@menu/side_menu">
+
+        <!-- layout to hold buttons at footer of side menu -->
+        <RelativeLayout
+            android:id="@+id/side_menu_footer"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_gravity="bottom">
+
+            <!-- Clear Markers Button -->
+            <Button
+                android:id="@+id/side_menu_clear"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="13dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginBottom="135dp"
+                android:background="@drawable/grey_border"
+                android:onClick="sideMenuClear"
+                android:text="Clear Markers"
+                android:textColor="@color/colorWhite" />
+
+            <!-- fuel info Button -->
+            <ImageButton
+                android:id="@+id/side_menu_fuel"
+                android:layout_width="150dp"
+                android:layout_height="55dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginRight="15dp"
+                android:layout_marginBottom="72dp"
+                android:background="@drawable/grey_border"
+                android:onClick="toggleFuelInfo"
+                android:src="@drawable/ic_fuel_white" />
+
+            <!-- Weather Time Button -->
+            <ImageButton
+                android:id="@+id/side_menu_time"
+                android:layout_width="150dp"
+                android:layout_height="55dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginRight="185dp"
+                android:layout_marginBottom="72dp"
+                android:background="@drawable/grey_border"
+                android:onClick="toggleWeatherTime"
+                android:src="@drawable/ic_clock_white" />
+
+            <!-- weather toggle button -->
+            <ImageButton
+                android:id="@+id/side_menu_weather"
+                android:layout_width="100dp"
+                android:layout_height="55dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginRight="15dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/grey_border"
+                android:onClick="toggleWeather"
+                android:src="@drawable/ic_cloud_white" />
+
+            <!-- map toggle button -->
+            <ImageButton
+                android:id="@+id/side_menu_map"
+                android:layout_width="100dp"
+                android:layout_height="55dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginRight="125dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/grey_border"
+                android:onClick="sideMenuMapStyle"
+                android:src="@drawable/ic_map_white" />
+
+            <!-- dark mode button -->
+            <ImageButton
+                android:id="@+id/side_menu_darkMode"
+                android:layout_width="100dp"
+                android:layout_height="55dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginRight="235dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/grey_border"
+                android:onClick="toggleDarkMode"
+                android:src="@drawable/ic_sun_white" />
+
+        </RelativeLayout>
+    </com.google.android.material.navigation.NavigationView>
+
+    <!-- All renderable elements must fall within this relativelayout      -->
+    <!-- keep map fragment at bottom of list so map stays below everything -->
+    <RelativeLayout
+        android:id="@+id/mainLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- header bar, containing side menu button and search bar -->
+        <RelativeLayout
+            android:id="@+id/top_menu_bar"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="60dp"
+            android:elevation="10dp"
+            android:orientation="horizontal">
+
+            <!-- Side Menu Toggle Button -->
+            <Button
+                android:id="@+id/side_menu_button"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/white_border"
+                android:drawableBottom="@drawable/ic_info"
+                android:onClick="openSideMenu" />
+
+            <!-- Search Bar -->
+            <RelativeLayout
+                android:id="@+id/search_bar_rel"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="50dp"
+                android:background="@drawable/white_border"
+                android:elevation="10dp"
+                android:orientation="horizontal">
+
+                <!-- autocomplete fragment -->
+                <fragment
+                    android:id="@+id/autocomplete_fragment"
+                    android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <!-- Route Button -->
+        <Button
+            android:id="@+id/route_button"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="45dp"
+            android:background="@drawable/white_border"
+            android:onClick="initRoute"
+            android:paddingHorizontal="10dp"
+            android:text="Start Route"
+            android:textSize="16dp"
+            android:visibility="invisible" />
+
+        <!-- Weather Time Display -->
+        <TextView
+            android:id="@+id/currentDateTimeDisplay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="100dp"
+            android:text="clock"
+            android:textColor="@color/quantum_black_text"
+            android:textSize="20sp"
+            android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/weatherDateTimeDisplay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="150dp"
+            android:textColor="@color/quantum_black_text"
+            android:textSize="20sp"
+            android:visibility="invisible" />
+
+
+        <Button
+            android:id="@+id/weatherDateTimePlus"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="100dp"
+            android:layout_marginTop="200dp"
+            android:background="@drawable/white_border"
+            android:onClick="dateTimeFunctionsPlusHour"
+            android:text="@string/buttonIncrease"
+            android:textSize="20sp"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/weatherDateTimeMinus"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="170dp"
+            android:layout_marginTop="200dp"
+            android:background="@drawable/white_border"
+            android:onClick="dateTimeFunctionsMinusHour"
+            android:text="@string/buttonDecrease"
+            android:textSize="20sp"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/weatherDateTimeReset"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="240dp"
+            android:layout_marginTop="200dp"
+            android:background="@drawable/white_border"
+            android:onClick="dateTimeFunctionsResetHour"
+            android:text="@string/buttonReset"
+            android:textSize="20sp"
+            android:visibility="invisible" />
+
+
+        <!-- Fuel info window -->
+        <RelativeLayout
+            android:id="@+id/fuel_info_window"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="60dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/grey_border"
+            android:elevation="10dp"
+            android:orientation="horizontal"
+            android:visibility="invisible">
+
+
+            <!-- Fuel Window Buttons -->
+            <Button
+                android:id="@+id/fuel_display_stations"
+                android:layout_width="190dp"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="50dp"
+                android:backgroundTint="@color/colorBlack"
+                android:text="Display Stations"
+                android:textColor="@color/colorWhite" />
+
+            <ImageButton
+                android:id="@+id/fuel_close"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="10dp"
+                android:backgroundTint="@color/colorBlack"
+                android:onClick="toggleFuelInfo"
+                android:src="@drawable/ic_cross"
+                android:tint="@color/colorWhite" />
+
+            <!-- Fuel Window Info -->
+<!--            <TextView-->
+<!--                android:id="@+id/textTitleFuelTankSize"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_alignParentLeft="true"-->
+<!--                android:layout_marginLeft="20dp"-->
+<!--                android:layout_marginTop="50dp"-->
+<!--                android:text="@string/fuel_tank_size_litres"-->
+<!--                android:textColor="@color/colorWhite"-->
+<!--                android:textSize="16sp"-->
+<!--                tools:layout_editor_absoluteY="39dp" />-->
+
+<!--            <EditText-->
+<!--                android:id="@+id/textFuelTankSize"-->
+<!--                android:layout_width="90dp"-->
+<!--                android:layout_height="50dp"-->
+<!--                android:layout_below="@id/textTitleFuelTankSize"-->
+<!--                android:layout_alignParentLeft="true"-->
+<!--                android:layout_marginLeft="20dp"-->
+<!--                android:hint="@string/Fuel_Used"-->
+<!--                android:importantForAutofill="no"-->
+<!--                android:inputType="number"-->
+<!--                android:textColor="@color/colorWhite"-->
+<!--                android:textColorHint="@color/colorWhite"-->
+<!--                android:textSize="16sp"-->
+<!--                android:title="@string/fuel_tank_size" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/textTitleFuelUsed"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_below="@id/textFuelTankSize"-->
+<!--                android:layout_alignParentLeft="true"-->
+<!--                android:layout_marginLeft="20dp"-->
+<!--                android:layout_marginTop="10dp"-->
+<!--                android:text="@string/fuel_used_litres"-->
+<!--                android:textColor="@color/colorWhite"-->
+<!--                android:textSize="16sp" />-->
+
+<!--            <EditText-->
+<!--                android:id="@+id/textFuelUsed"-->
+<!--                android:layout_width="90dp"-->
+<!--                android:layout_height="50dp"-->
+<!--                android:layout_below="@id/textTitleFuelUsed"-->
+<!--                android:layout_alignParentLeft="true"-->
+<!--                android:layout_marginLeft="20dp"-->
+<!--                android:hint="@string/Fuel_Used"-->
+<!--                android:importantForAutofill="no"-->
+<!--                android:inputType="number"-->
+<!--                android:textColor="@color/colorWhite"-->
+<!--                android:textColorHint="@color/colorWhite"-->
+<!--                android:textSize="16sp"-->
+<!--                android:title="@string/fuel_used" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/textTitleTripDistance"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_below="@id/textFuelUsed"-->
+<!--                android:layout_alignParentLeft="true"-->
+<!--                android:layout_marginLeft="20dp"-->
+<!--                android:layout_marginTop="10dp"-->
+<!--                android:text="@string/trip_distance_km"-->
+<!--                android:textColor="@color/colorWhite"-->
+<!--                android:textSize="16sp" />-->
+
+<!--            <EditText-->
+<!--                android:id="@+id/textTripDistance"-->
+<!--                android:layout_width="90dp"-->
+<!--                android:layout_height="50dp"-->
+<!--                android:layout_below="@id/textTitleTripDistance"-->
+<!--                android:layout_alignParentLeft="true"-->
+<!--                android:layout_marginLeft="20dp"-->
+<!--                android:hint="@string/Fuel_Used"-->
+<!--                android:importantForAutofill="no"-->
+<!--                android:inputType="number"-->
+<!--                android:textColor="@color/colorWhite"-->
+<!--                android:textColorHint="@color/colorWhite"-->
+<!--                android:textSize="16sp"-->
+<!--                android:title="@string/trip_distance" />-->
+
+            <TextView
+                android:id="@+id/textTitleMaxRange"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fuel_display_stations"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="20dp"
+                android:text="@string/calculated_maximum_range_km"
+                android:textColor="@color/colorWhite"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/textMaxRange"
+                android:layout_width="90dp"
+                android:layout_height="50dp"
+                android:layout_below="@id/textTitleMaxRange"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="20dp"
+                android:layout_marginBottom="10dp"
+                android:hint="@string/Fuel_Used"
+                android:importantForAutofill="no"
+                android:inputType="numberSigned"
+                android:textColor="@color/colorWhite"
+                android:textColorHint="@color/colorWhite"
+                android:textSize="16sp"
+                android:title="@string/max_range" />
+
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/undoMarkerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="160dp"
+            android:background="@drawable/white_border"
+            android:paddingHorizontal="10dp"
+            android:text="Remove Marker"
+            android:textSize="16dp"
+            android:visibility="invisible" />
+
+        <!-- the map fragment -->
+        <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".MapsActivity" />
+
+
+    </RelativeLayout>
+
+</androidx.drawerlayout.widget.DrawerLayout>
